@@ -87,6 +87,13 @@ namespace n_body{
 			vec distance(const body& other) const{
 				return (position - other.position);
 			}
+
+			// Member function to update the state of a body
+			void update_state(vec net_force, T time_step){
+				position += (velocity * time_step);
+				velocity += (acceleration * time_step);
+				acceleration = (T(1) / mass) * net_force;
+			}
 		
 			T mass;
 			vec position;
@@ -94,10 +101,12 @@ namespace n_body{
 			vec acceleration;
 	};
 
-	// Function to help calculate total forces on each body
-	// and update their motion accordingly
+	// Function to help calculate total net forces on each body
+	// with an efficient method that avoids redundant calculations
+	// by using Newton's 3rd law of equal and opposite reactions.
+	// Then, updating the motion of the bodies accordingly
 	template<class T>
-	void work_in_time_step(body<T>* bd, std::size_t N){
+	void work_in_time_step(body<T>* bd, std::size_t N, T time_step){
 		using vec = vector<T>;
 		vec* reactions = new vec[N];
 		vec summed_forces;
@@ -109,7 +118,8 @@ namespace n_body{
 				reactions[j] += force_i_j;
 				summed_forces += force_i_j;
 			}
-			std::cout<<"summed force: ("<<(summed_forces.x)<<" "<<(summed_forces.y)<<std::endl; // Replace with update_state function
+			bd[i].update_state(summed_forces,time_step);
+			//std::cout<<"summed force: ("<<(summed_forces.x)<<" "<<(summed_forces.y)<<std::endl; // Replace with update_state function
 		}
 
 		delete[] reactions;

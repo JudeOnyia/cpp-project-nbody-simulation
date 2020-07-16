@@ -94,11 +94,30 @@ namespace n_body{
 				velocity += (acceleration * time_step);
 				acceleration = (T(1) / mass) * net_force;
 			}
+
+			// Member function to calculate the data needed
+			// to form the circular object in a window
+			void form_circ_obj(T max_mass, T max_pos){
+				if(mass < (T(0.25)*max_mass)){ radius = T(0.06)*max_pos; }
+				else if(mass < (T(0.50)*max_mass)){ radius = T(0.09)*max_pos; }
+				else if(mass < (T(0.75)*max_mass)){ radius = T(0.12)*max_pos; }
+				else { radius = T(0.15)*max_pos; }
+	                        // Make circular object
+				T theta(0);
+				for(std::size_t i=0; i<20; ++i){
+					theta = T(i)*T(2.0)*T(3.1415926)/T(20);
+					vertex[i].x = radius * std::cos(theta);
+					vertex[i].y = radius * std::sin(theta);
+				}
+			}
+			
 		
 			T mass;
 			vec position;
 			vec velocity;
 			vec acceleration;
+			vec vertex[20]; // Needed to made circle primitive quickly
+			T radius; // Needed to compare for deflection conditions
 	};
 
 	// Function to help calculate total net forces on each body
@@ -119,11 +138,37 @@ namespace n_body{
 				summed_forces += force_i_j;
 			}
 			bd[i].update_state(summed_forces,time_step);
-			//std::cout<<"summed force: ("<<(summed_forces.x)<<" "<<(summed_forces.y)<<std::endl; // Replace with update_state function
 		}
 
 		delete[] reactions;
 	}
+
+	// A dummy class to ensure that memory is deallocated when the program is forced to terminate
+	template<class T>
+	class system_of_bodies{
+		public:
+		system_of_bodies(std::size_t num_of_bodies){
+			bodies = new body<T>[num_of_bodies]; // Create an array of type body
+		}
+		~system_of_bodies(){
+			delete[] bodies;
+		}
+		system_of_bodies(system_of_bodies&&) = delete;
+		system_of_bodies(const system_of_bodies&) = delete;
+		system_of_bodies& operator=(system_of_bodies&&) = delete;
+		system_of_bodies& operator=(const system_of_bodies&) = delete;
+		body<T>* get_bodies() const { return bodies; }
+
+		private:
+		body<T>* bodies;
+
+		
+	};
+
+	/*class clean_up{
+		public:
+			clean_up(body<)
+	};*/
 
 
 

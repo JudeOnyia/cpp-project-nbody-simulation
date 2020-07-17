@@ -16,25 +16,29 @@ using body = n_body::body<type_t>;
 void display();
 void init();
 void reshape(int,int);
+void timer(int);
 void printv(vec v);
 void printb(body b);
 
 // Global variables needed by functions from the GLUT library
 std::size_t num_of_bodies;
-body* bodies;
-type_t max_pos_range(0); // The maximum range of positions needed for reshaping the object space
+//body* bodies;
+const std::size_t max_num_of_bodies = 10; // maximum number of bodies in the system
+body bodies[max_num_of_bodies];
+type_t max_pos(0); // The maximum position value amongst all objects in the system
+type_t obj_space_range(0); // The half of the length and width of the object space
 
 int main(int argc, char** argv){
 
 	// Read in the number of bodies
 	cin>>num_of_bodies;
-	if(cin.fail()){
+	if(cin.fail() || (num_of_bodies > max_num_of_bodies)){
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 		throw std::runtime_error("Wrong input entered");
 	}
-	n_body::system_of_bodies<type_t> syst(num_of_bodies);
-	bodies = syst.get_bodies();
+	//n_body::system_of_bodies<type_t> syst(num_of_bodies);
+	//bodies = syst.get_bodies();
 	//bodies = new body[num_of_bodies]; // Create an array of type body
 	type_t max_mass(0); // The maximum mass needed for regulating the radius of objects(bodies)	
 
@@ -49,7 +53,7 @@ int main(int argc, char** argv){
 			if((bodies[i].mass)>(max_mass)){ max_mass = bodies[i].mass; }
 			cin>>bodies[i].position.x; if(cin.fail()){ throw std::runtime_error(""); }
 			cin>>bodies[i].position.y; if(cin.fail()){ throw std::runtime_error(""); }
-			if(std::abs(bodies[i].position.norm())>(max_pos_range)){ max_pos_range = std::abs(bodies[i].position.norm()); }
+			if(std::abs(bodies[i].position.norm())>(max_pos)){ max_pos = std::abs(bodies[i].position.norm()); }
 			cin>>bodies[i].velocity.x; if(cin.fail()){ throw std::runtime_error(""); }
 			cin>>bodies[i].velocity.y; if(cin.fail()){ throw std::runtime_error(""); }
 			cin>>bodies[i].acceleration.x; if(cin.fail()){ throw std::runtime_error(""); }
@@ -65,8 +69,10 @@ int main(int argc, char** argv){
 	// Create vertices for circular objects that correspond to
 	// the bodies
 	for(std::size_t i=0; i<num_of_bodies; ++i){
-		bodies[i].form_circ_obj(max_mass,max_pos_range);
+		bodies[i].form_circ_obj(max_mass,max_pos);
 	}
+
+	obj_space_range = max_pos + (0.25 * max_pos);
 
 	// Animation and update of states
 	glutInit(&argc,argv); // Initialzation needed by the GLUT library
@@ -76,19 +82,10 @@ int main(int argc, char** argv){
 	glutCreateWindow("N-body Problem"); // Create a window
 	glutDisplayFunc(display); // Tell the GLUT library what display function to use
 	glutReshapeFunc(reshape); // Tell the GLUT library to reshape the window according to the reshap function
+	glutTimerFunc(0,timer,0); // Tell the GLUT library what function to call at a specified time period
 	init(); // Initial setting of the window features
 	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutMainLoop();	
-
-
-	
-
-
-
-
-	
-
-
 
 
 	//delete[] bodies;
@@ -124,8 +121,17 @@ void reshape(int w,int h){
 	glViewport(0,0,(GLsizei)w,(GLsizei)h); // Specify viewport
 	glMatrixMode(GL_PROJECTION); // Switch to different matrix from GL_MODELVIEW
 	glLoadIdentity();// Resets the pixel position matrix
-	gluOrtho2D(-max_pos_range,max_pos_range,-max_pos_range,max_pos_range); // To specify 2D projection (the object space)
+	gluOrtho2D(-obj_space_range,obj_space_range,-obj_space_range,obj_space_range);//To specify 2D projection (the object space)
 	glMatrixMode(GL_MODELVIEW); // Need to always be in model view matrix, need to be here also to draw stuff
+}
+
+void timer(int){
+	glutPostRedisplay(); // urges OpenGL to call the display function again when it can
+	glutTimerFunc(1000/60,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 60 frames/sec
+	static type_t time_step = 20;
+	for(std::size_t i=0; i<500; ++i){
+		work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
+	}
 }
 
 

@@ -54,27 +54,40 @@ namespace n_body{
 			const T G = T(6.67408E-11); // Gravitational constant
 
 			// Default constructor
-			body() : mass(0),position(0,0),velocity(0,0),acceleration(0,0) {}
+			body() : mass(0),position(0,0),velocity(0,0),acceleration(0,0),collision(false) {}
 
 			// Move constructor
-			body(body&& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration) {}
+			body(body&& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration),collision(false) {}
 			// Move assignment
 			body& operator=(body&& other){ mass=other.mass; position=other.position; velocity=other.velocity; acceleration=other.acceleration; return *this; }
 			
 			// Copy constructor
-			body(const body& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration) {}
+			body(const body& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration),collision(false) {}
 			
 			// Copy assignment
 			body& operator=(const body& other) { mass=other.mass; position=other.position; velocity=other.velocity; acceleration=other.acceleration; return *this; }
 
 			// Constructor to initialize state of body
-			body(T m,vec p,vec v,vec a) : mass(m),position(p),velocity(v),acceleration(a) {}	
+			body(T m,vec p,vec v,vec a) : mass(m),position(p),velocity(v),acceleration(a),collision(false) {}	
 			
 			// Memeber function to calculate the oriented individual force
 			// that a body (other) has on another body (*this) 
-			vec individual_force(const body& other) const {
+			vec individual_force(body& other) {
 				vec r_dist = position - other.position;
 				T r = r_dist.norm();
+
+				// Condition for collision with other object
+				if((radius>=(r-other.radius)) && (collision==false)){
+					velocity = T(-1) * velocity;
+					collision = true;
+					other.collision = true;
+				}
+				else if((radius<(r-other.radius)) && (collision==true)){
+					collision = false;
+					other.collision = false;
+				}
+				else {}
+
 				vec force;
 				if(r != T(0)){
 					force = (T(-1)*G*mass*other.mass/(r*r*r)) * r_dist;
@@ -118,6 +131,7 @@ namespace n_body{
 			vec acceleration;
 			vec vertex[20]; // Needed to made circle primitive quickly
 			T radius; // Needed to compare for deflection conditions
+			bool collision;
 	};
 
 	// Function to help calculate total net forces on each body
@@ -125,7 +139,7 @@ namespace n_body{
 	// by using Newton's 3rd law of equal and opposite reactions.
 	// Then, updating the motion of the bodies accordingly
 	template<class T>
-	void work_in_time_step(body<T>* bd, std::size_t N, T time_step){
+	void work_in_time_step(body<T>* bd, std::size_t N, T time_step, T obj_space_range){
 		using vec = vector<T>;
 		vec* reactions = new vec[N];
 		vec summed_forces;
@@ -138,13 +152,21 @@ namespace n_body{
 				summed_forces += force_i_j;
 			}
 			bd[i].update_state(summed_forces,time_step);
+
+			// Condition for when a body hits an edge of the window
+			if(((bd[i].position.x-bd[i].radius)<=(-obj_space_range)) || ((bd[i].position.x+bd[i].radius)>=(obj_space_range))){
+				bd[i].velocity.x *= T(-1);
+			}
+			if(((bd[i].position.y-bd[i].radius)<=(-obj_space_range)) || ((bd[i].position.y+bd[i].radius)>=(obj_space_range))){
+				bd[i].velocity.y *= T(-1);
+			}
 		}
 
 		delete[] reactions;
 	}
 
 	// A dummy class to ensure that memory is deallocated when the program is forced to terminate
-	template<class T>
+	/*template<class T>
 	class system_of_bodies{
 		public:
 		system_of_bodies(std::size_t num_of_bodies){
@@ -163,7 +185,7 @@ namespace n_body{
 		body<T>* bodies;
 
 		
-	};
+	};*/
 
 	/*class clean_up{
 		public:

@@ -127,11 +127,11 @@ void reshape(int w,int h){
 
 void timer(int){
 	glutPostRedisplay(); // urges OpenGL to call the display function again when it can
-	glutTimerFunc(1000/60,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 60 frames/sec
+	glutTimerFunc(1000/20,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 20 frames/sec (was 60)
 	static type_t time_step = 20;
-	for(std::size_t i=0; i<500; ++i){
+	//for(std::size_t i=0; i<100; ++i){
 		work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
-	}
+	//}
 }
 
 

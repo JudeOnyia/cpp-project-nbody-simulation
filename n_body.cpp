@@ -92,6 +92,7 @@ int main(int argc, char** argv){
 		}
 		for(std::size_t j=(i+1); j<num_of_bodies; ++j){
 			if((bodies[i].radius)>=(((bodies[i].position-bodies[j].position).norm())-(bodies[j].radius))){
+				cout<<"Overlap between body #"<<i<<" and body #"<<j<<endl;
 				throw std::runtime_error("Circular objects overlapping. Allow more distance between initial positions of bodies");
 			}
 		}

@@ -22,9 +22,9 @@ void printb(body b);
 
 // Global variables needed by functions from the GLUT library
 std::size_t num_of_bodies;
-//body* bodies;
+body* bodies;
 const std::size_t max_num_of_bodies = 10; // maximum number of bodies in the system
-body bodies[max_num_of_bodies];
+//body bodies[max_num_of_bodies];
 type_t max_pos(0); // The maximum position value amongst all objects in the system
 type_t obj_space_range(0); // The half of the length and width of the object space
 
@@ -46,8 +46,8 @@ int main(int argc, char** argv){
 		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 		throw std::runtime_error("Wrong input entered");
 	}
-	//n_body::system_of_bodies<type_t> syst(num_of_bodies);
-	//bodies = syst.get_bodies();
+	n_body::system_of_bodies<type_t> syst(num_of_bodies);
+	bodies = syst.get_bodies();
 	//bodies = new body[num_of_bodies]; // Create an array of type body
 	type_t max_mass(0); // The maximum mass needed for regulating the radius of objects(bodies)	
 
@@ -136,8 +136,8 @@ void reshape(int w,int h){
 
 void timer(int){
 	glutPostRedisplay(); // urges OpenGL to call the display function again when it can
-	glutTimerFunc(1000/20,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 20 frames/sec (was 60)
-	static type_t time_step = 20;
+	glutTimerFunc(1000/30,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 20 frames/sec (was 60)
+	type_t time_step = 20; // Was 20
 	//for(std::size_t i=0; i<100; ++i){
 		work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
 	//}

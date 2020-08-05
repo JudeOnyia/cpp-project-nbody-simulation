@@ -75,7 +75,7 @@ namespace n_body{
 				vec r_dist = position - other.position;
 				T r = r_dist.norm();
 
-				// Condition for collision with other object
+				/*// Condition for collision with other object
 				if((radius>=(r-other.radius)) && (collision==false)){
 					velocity = T(-1) * velocity;
 					collision = true;
@@ -85,7 +85,7 @@ namespace n_body{
 					collision = false;
 					other.collision = false;
 				}
-				else {}
+				else {}*/
 
 				vec force;
 				if(r != T(0)){
@@ -137,6 +137,26 @@ namespace n_body{
 	template<class T>
 	T body<T>::G = T(6.67408E-11);
 
+	// Function to help calculate final velocities under elastic collision rules
+	template<class T>
+	void elastic_collision(body<T>& A, body<T>& B){
+		using vec = vector<T>;
+		T mA = A.mass;
+		T mB = B.mass;
+		vec vAi = A.velocity;
+		vec vBi = B.velocity;
+		vec vBf = ((T(2)*mA*vAi)+((mB-mA)*vBi)) * (T(1)/(mA+mB));
+		vec vAf = vBf + vBi - vAi;
+		vec distAB = B.position - A.position;
+		vec distBA = A.position - B.position;
+		if( (distAB.x * vAi.x) < T(0) ){ vAf.x = -(vAf.x); vBf.x = -(vBf.x); }
+		if( (distAB.y * vAi.y) < T(0) ){ vAf.y = -(vAf.y); vBf.y = -(vBf.y); }	
+		//if(mA <= mB){ vAf.x = -(vAf.x); }
+		//else { vBf.x = -(vBf.x); }
+		A.velocity = vAf;
+		B.velocity = vBf;
+	}
+
 	// Function to help calculate total net forces on each body
 	// with an efficient method that avoids redundant calculations
 	// by using Newton's 3rd law of equal and opposite reactions.
@@ -153,6 +173,10 @@ namespace n_body{
 				force_i_j = bd[i].individual_force(bd[j]);
 				reactions[j] += force_i_j;
 				summed_forces += force_i_j;
+				// Condition for when bodies hit each other
+				if((bd[i].radius)>=(((bd[i].position-bd[j].position).norm())-(bd[j].radius))){
+					elastic_collision(bd[i],bd[j]);
+				}
 			}
 			bd[i].update_state(summed_forces,time_step);
 
@@ -163,13 +187,15 @@ namespace n_body{
 			if(((bd[i].position.y-bd[i].radius)<=(-obj_space_range)) || ((bd[i].position.y+bd[i].radius)>=(obj_space_range))){
 				bd[i].velocity.y *= T(-1);
 			}
+
+
 		}
 
 		delete[] reactions;
 	}
 
 	// A dummy class to ensure that memory is deallocated when the program is forced to terminate
-	/*template<class T>
+	template<class T>
 	class system_of_bodies{
 		public:
 		system_of_bodies(std::size_t num_of_bodies){
@@ -178,6 +204,7 @@ namespace n_body{
 		~system_of_bodies(){
 			delete[] bodies;
 		}
+		system_of_bodies() = delete;
 		system_of_bodies(system_of_bodies&&) = delete;
 		system_of_bodies(const system_of_bodies&) = delete;
 		system_of_bodies& operator=(system_of_bodies&&) = delete;
@@ -188,7 +215,7 @@ namespace n_body{
 		body<T>* bodies;
 
 		
-	};*/
+	};
 
 	/*class clean_up{
 		public:

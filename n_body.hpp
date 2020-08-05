@@ -176,7 +176,13 @@ namespace n_body{
 				// Condition for when bodies hit each other
 				if((bd[i].radius)>=(((bd[i].position-bd[j].position).norm())-(bd[j].radius))){
 					elastic_collision(bd[i],bd[j]);
+					//bd[i].collision = true;
+					//bd[j].collision = true;
 				}
+				/*if(!((bd[i].radius)>=(((bd[i].position-bd[j].position).norm())-(bd[j].radius))) && (bd[i].collision) && (bd[j].collision)){
+					bd[i].collision = false;
+					bd[j].collision = false;
+				}*/
 			}
 			bd[i].update_state(summed_forces,time_step);
 

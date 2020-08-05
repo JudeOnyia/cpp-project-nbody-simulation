@@ -35,7 +35,7 @@ int main(int argc, char** argv){
 	if(cin.fail()){
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-		throw std::runtime_error("Wrong input entered");
+		throw std::runtime_error("Wrong input entered: gravitional constant");
 	}
 	if(g != type_t(0)){ body::G = g; }
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv){
 	if(cin.fail() || (num_of_bodies > max_num_of_bodies)){
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-		throw std::runtime_error("Wrong input entered");
+		throw std::runtime_error("Wrong input entered: number of bodies");
 	}
 	n_body::system_of_bodies<type_t> syst(num_of_bodies);
 	bodies = syst.get_bodies();
@@ -54,7 +54,7 @@ int main(int argc, char** argv){
 	// Read in the state of each body.
 	// Due to the strict input format that must be followed,
 	// If a wrong input is given, the program must be terminated
-	// rather than continuing to take inputs that won't assigned to the
+	// rather than continuing to take inputs that won't be assigned to the
 	// intended variable
 	for(std::size_t i=0; i<num_of_bodies; ++i){
 		try{
@@ -71,7 +71,7 @@ int main(int argc, char** argv){
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 			//delete[] bodies;
-			throw std::runtime_error("Wrong input entered");
+			throw std::runtime_error("Wrong input entered: initial state of one or more bodies");
 		}
 	}
 
@@ -80,8 +80,22 @@ int main(int argc, char** argv){
 	for(std::size_t i=0; i<num_of_bodies; ++i){
 		bodies[i].form_circ_obj(max_mass,max_pos);
 	}
-
 	obj_space_range = max_pos + (0.25 * max_pos);
+
+	// Circular objects should not overlap at the beginning of the program.
+	// This is a critical error that will result in undefined behaviour.
+	// Also, the initial velocity of a bodies must have a limit compared to the system's object space,
+	// otherwise, the movements of circular objects will be relatively too fast to visually analyze.
+	for(std::size_t i=0; i<num_of_bodies; ++i){
+		if(((bodies[i].velocity.x) > (type_t(0.001)*max_pos)) || ((bodies[i].velocity.y) > (type_t(0.001)*max_pos))){
+			throw std::runtime_error("Velocity of one or more bodies is too high compared to object space for visualization");
+		}
+		for(std::size_t j=(i+1); j<num_of_bodies; ++j){
+			if((bodies[i].radius)>=(((bodies[i].position-bodies[j].position).norm())-(bodies[j].radius))){
+				throw std::runtime_error("Circular objects overlapping. Allow more distance between initial positions of bodies");
+			}
+		}
+	}
 
 	// Animation and update of states
 	glutInit(&argc,argv); // Initialzation needed by the GLUT library

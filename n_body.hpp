@@ -51,7 +51,6 @@ namespace n_body{
 	struct body{
 		
 			using vec = vector<T>;
-			const T G = T(6.67408E-11); // Gravitational constant
 
 			// Default constructor
 			body() : mass(0),position(0,0),velocity(0,0),acceleration(0,0),collision(false) {}
@@ -125,6 +124,7 @@ namespace n_body{
 			}
 			
 		
+			static T G; // Gravitational constant
 			T mass;
 			vec position;
 			vec velocity;
@@ -133,6 +133,9 @@ namespace n_body{
 			T radius; // Needed to compare for deflection conditions
 			bool collision;
 	};
+
+	template<class T>
+	T body<T>::G = T(6.67408E-11);
 
 	// Function to help calculate total net forces on each body
 	// with an efficient method that avoids redundant calculations

@@ -29,6 +29,15 @@ type_t max_pos(0); // The maximum position value amongst all objects in the syst
 type_t obj_space_range(0); // The half of the length and width of the object space
 
 int main(int argc, char** argv){
+	// Read in the gravitational constant if one is specified
+	type_t g(0);
+	cin>>g;
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+		throw std::runtime_error("Wrong input entered");
+	}
+	if(g != type_t(0)){ body::G = g; }
 
 	// Read in the number of bodies
 	cin>>num_of_bodies;

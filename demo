@@ -1,0 +1,3 @@
+#! /usr/bin/bash
+
+./n_body < initial_state.txt

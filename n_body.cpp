@@ -21,15 +21,16 @@ void printv(vec v);
 void printb(body b);
 
 // Global variables needed by functions from the GLUT library
-std::size_t num_of_bodies;
+std::size_t num_of_bodies(0);
 body* bodies;
-const std::size_t max_num_of_bodies = 10; // maximum number of bodies in the system
-//body bodies[max_num_of_bodies];
+type_t time_step(0);
+const std::size_t max_num_of_bodies(20); // maximum number of bodies allowed in the system
 type_t max_pos(0); // The maximum position value amongst all objects in the system
-type_t obj_space_range(0); // The half of the length and width of the object space
+type_t obj_space_range(0); // Half of the length and width of the object space where the system is confined
 
 int main(int argc, char** argv){
-	// Read in the gravitational constant if one is specified
+	// Read in the gravitational constant if the user of the program wants to change from the default
+	// If the user wants the default value, the user can pass a value of zero for this input
 	type_t g(0);
 	cin>>g;
 	if(cin.fail()){
@@ -39,7 +40,15 @@ int main(int argc, char** argv){
 	}
 	if(g != type_t(0)){ body::G = g; }
 
-	// Read in the number of bodies
+	// Read in the time step used for updating the system
+	cin>>time_step;
+	if(cin.fail() || (time_step <= type_t(0))){
+		cin.clear();
+		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+		throw std::runtime_error("Wrong input entered: time step cannot be zero or negative");
+	}
+
+	// Read in the number of bodies in the system
 	cin>>num_of_bodies;
 	if(cin.fail() || (num_of_bodies > max_num_of_bodies)){
 		cin.clear();
@@ -48,7 +57,6 @@ int main(int argc, char** argv){
 	}
 	n_body::system_of_bodies<type_t> syst(num_of_bodies);
 	bodies = syst.get_bodies();
-	//bodies = new body[num_of_bodies]; // Create an array of type body
 	type_t max_mass(0); // The maximum mass needed for regulating the radius of objects(bodies)	
 
 	// Read in the state of each body.
@@ -70,13 +78,11 @@ int main(int argc, char** argv){
 		} catch(...){
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-			//delete[] bodies;
 			throw std::runtime_error("Wrong input entered: initial state of one or more bodies");
 		}
 	}
 
-	// Create vertices for circular objects that correspond to
-	// the bodies
+	// Create vertices for circular objects that correspond to the bodies in the system
 	for(std::size_t i=0; i<num_of_bodies; ++i){
 		bodies[i].form_circ_obj(max_mass,max_pos);
 	}
@@ -108,11 +114,7 @@ int main(int argc, char** argv){
 	glutReshapeFunc(reshape); // Tell the GLUT library to reshape the window according to the reshap function
 	glutTimerFunc(0,timer,0); // Tell the GLUT library what function to call at a specified time period
 	init(); // Initial setting of the window features
-	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-	glutMainLoop();	
-
-
-	//delete[] bodies;
+	glutMainLoop();
 }
 
 
@@ -130,9 +132,7 @@ void display(){
 		}
 		glEnd();
 	}
-
 	glutSwapBuffers(); // After drawing all circular objects, switch the drawing frame with the display frame
-	
 }
 
 
@@ -146,25 +146,12 @@ void reshape(int w,int h){
 	glMatrixMode(GL_PROJECTION); // Switch to different matrix from GL_MODELVIEW
 	glLoadIdentity();// Resets the pixel position matrix
 	gluOrtho2D(-obj_space_range,obj_space_range,-obj_space_range,obj_space_range);//To specify 2D projection (the object space)
-	glMatrixMode(GL_MODELVIEW); // Need to always be in model view matrix, need to be here also to draw stuff
+	glMatrixMode(GL_MODELVIEW); // Switch back to model view matrix (GL_MODELVIEW), need to be here also to draw primitives
 }
 
 void timer(int){
 	glutPostRedisplay(); // urges OpenGL to call the display function again when it can
-	glutTimerFunc(1000/30,timer,0); //(ms,func,arg) Recursively calling itself, makes this periodic, 20 frames/sec (was 60)
-	type_t time_step = 20; // Was 20
-	//for(std::size_t i=0; i<100; ++i){
-		work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
-	//}
+	glutTimerFunc(1000/30,timer,0); //(ms,func,arg) Recursively calling itself periodically (30 frames per second)
+	work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
 }
 
-
-
-void printv(vec v){ cout<<"("<<(v.x)<<", "<<(v.y)<<")"<<endl; }
-void printb(body b){
-	cout<<endl;
-	cout<<"   mass: "<<(b.mass)<<endl;
-	cout<<"   position: "; printv(b.position);
-	cout<<"   velocity: "; printv(b.velocity);
-	cout<<"   acceleration: "; printv(b.acceleration);
-}

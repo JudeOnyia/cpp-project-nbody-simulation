@@ -20,11 +20,15 @@ if (NOT GLUT_Xmu_LIBRARY OR NOT GLUT_Xmi_LIBRARY)
 endif()
 
 # Set Include Directory and Libraries
-include_directories(${GLUT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+include_directories(include ${GLUT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 link_libraries(${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 include(Sanitizers.cmake) # REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 set(CMAKE_BUILD_TYPE Debug) # REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
 # Add Executable Program
-add_executable(n_body n_body.cpp n_body.hpp)
+add_executable(n_body n_body.cpp)
+
+install(TARGETS n_body DESTINATION bin)
+install(PROGRAMS demo DESTINATION bin)
+install(FILES initial_state.txt DESTINATION bin)

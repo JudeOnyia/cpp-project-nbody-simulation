@@ -1,3 +1,17 @@
 #! /usr/bin/bash
 
-./n_body < initial_state.txt
+# Print an error message and exit.
+panic()
+{
+	echo "ERROR: $@"
+	exit 1
+}
+
+# Get install-bin directory
+cmd_dir=$(dirname "$0") || panic "cannot determine command directory"
+
+n_body_program="$cmd_dir/n_body"
+init_state="$cmd_dir/initial_state.txt"
+echo "Running n_body program demo"
+$n_body_program < $init_state || panic "n_body program demo failed"
+

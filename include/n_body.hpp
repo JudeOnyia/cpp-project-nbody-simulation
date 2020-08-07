@@ -6,7 +6,7 @@
 
 namespace n_body{
 
-	// convenient x-y component class
+	// Convenient x-y component class
 	template<class T>
 	struct vector{
 		vector() : x(0), y(0) {} // Default constructor
@@ -29,43 +29,34 @@ namespace n_body{
 		vector operator*(const vector& obj) const { return vector((x * obj.x),(y * obj.y)); }
 
 		bool operator!() const { return (x==T(0) && y==T(0)); } // Operator to check if vector is zero vector
-
 		bool operator==(const vector& obj) const { return(x==obj.x && y==obj.y); } // Operator to check equality
-
 		bool operator!=(const vector& obj) const { return(x!=obj.x || y!=obj.y); } // Operator to check inequality
-
 		T norm() const { return std::sqrt(x*x + y*y); }
 
 		T x;
 		T y;
 	};
 
-	// Non-member class for multipling vector with constants
+	// Non-member operator for multipling vectors with constants
 	template<class T>
 	vector<T> operator*(const T& num,const vector<T>& obj) { return vector<T>((obj.x * num),(obj.y * num)); }
 	template<class T>
 	vector<T> operator*(const vector<T>& obj,const T& num) { return vector<T>((obj.x * num),(obj.y * num)); }
 
-	// class for representing celestial bodies
+	// Class for representing celestial bodies
 	template<class T>
 	struct body{
-		
 			using vec = vector<T>;
-
 			// Default constructor
 			body() : mass(0),position(0,0),velocity(0,0),acceleration(0,0),collision(false) {}
-
 			// Move constructor
 			body(body&& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration),collision(false) {}
 			// Move assignment
 			body& operator=(body&& other){ mass=other.mass; position=other.position; velocity=other.velocity; acceleration=other.acceleration; return *this; }
-			
 			// Copy constructor
 			body(const body& other) : mass(other.mass),position(other.position),velocity(other.velocity),acceleration(other.acceleration),collision(false) {}
-			
 			// Copy assignment
 			body& operator=(const body& other) { mass=other.mass; position=other.position; velocity=other.velocity; acceleration=other.acceleration; return *this; }
-
 			// Constructor to initialize state of body
 			body(T m,vec p,vec v,vec a) : mass(m),position(p),velocity(v),acceleration(a),collision(false) {}	
 			

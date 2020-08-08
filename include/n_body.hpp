@@ -62,7 +62,7 @@ namespace n_body{
 			
 			// Memeber function to calculate the oriented individual force
 			// that a body (other) has on another body (*this) 
-			vec individual_force(body& other) {
+			vec individual_force(body& other) const {
 				vec r_dist = position - other.position;
 				T r = r_dist.norm();
 				vec force;

@@ -45,9 +45,10 @@ specifications since the project proposal can be found below:
 	this is visually undesirable and the program will terminate with a runtime error.
 
 2)	In the case of a collision, this is handled by the mathematics involved in
-	elastic collision, which assumes all collisions are head-on collisions and does
-	not regard the angle of impact. This reduces complexity, which is beneficial
-	for the fast computions required by this project.
+	elastic collision, which assumes all collisions are head-on, the angle of impact
+	is handled by comparing the direction of a body's velocity to the direction of
+	the distance to the other body involved. This reduces complexity, which is
+	beneficial for the fast computions required by this project.
 
 3)	The calculation of the net gravitational force on each body is performed with an
 	efficient method that avoids redundant calculations by using Newton's 3rd law of

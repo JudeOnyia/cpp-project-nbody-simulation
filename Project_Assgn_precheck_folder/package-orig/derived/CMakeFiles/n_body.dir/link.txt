@@ -1,0 +1,1 @@
+/home/frodo/public/ugls_lab-4.0.70/bin/c++    -rdynamic CMakeFiles/n_body.dir/n_body.cpp.o  -o n_body  -lglut -lGL -lGLU 

@@ -1,0 +1,4 @@
+Scanning dependencies of target n_body
+[ 50%] Building CXX object CMakeFiles/n_body.dir/n_body.cpp.o
+[100%] Linking CXX executable n_body
+[100%] Built target n_body

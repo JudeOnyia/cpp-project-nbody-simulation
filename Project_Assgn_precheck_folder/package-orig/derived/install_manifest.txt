@@ -1,0 +1,3 @@
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/install/bin/n_body
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/install/bin/demo
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/install/bin/initial_state.txt

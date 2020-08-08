@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/source/include/n_body.hpp
+cstddef
+-
+cmath
+-
+iostream
+-
+
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/source/n_body.cpp
+n_body.hpp
+/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/source/n_body.hpp
+iostream
+-
+cstddef
+-
+limits
+-
+cmath
+-
+stdexcept
+-
+GL/glut.h
+-
+

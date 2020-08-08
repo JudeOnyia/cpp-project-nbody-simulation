@@ -1,7 +1,0 @@
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/install/strip.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/install/local.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/install.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/list_install_components.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/edit_cache.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/rebuild_cache.dir
-/home/judeonyia/Documents/ECE596C_Assignments/ECE596C_Project/cpp_project-jude-onyia/Project_Assgn_precheck_folder/package-orig/derived/CMakeFiles/n_body.dir

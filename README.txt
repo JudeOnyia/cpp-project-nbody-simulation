@@ -48,7 +48,7 @@ specifications since the project proposal can be found below:
 	elastic collision, which assumes all collisions are head-on, the angle of impact
 	is handled by comparing the direction of a body's velocity to the direction of
 	the distance to the other body involved. This reduces complexity, which is
-	beneficial for the fast computions required by this project.
+	beneficial for the fast computation required between each frame in the animation.
 
 3)	The calculation of the net gravitational force on each body is performed with an
 	efficient method that avoids redundant calculations by using Newton's 3rd law of

@@ -17,8 +17,6 @@ void display();
 void init();
 void reshape(int,int);
 void timer(int);
-void printv(vec v);
-void printb(body b);
 
 // Global variables needed by functions from the GLUT library
 std::size_t num_of_bodies(0);

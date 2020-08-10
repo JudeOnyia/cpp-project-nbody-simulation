@@ -17,6 +17,7 @@ void display();
 void init();
 void reshape(int,int);
 void timer(int);
+void mykey(unsigned char,int,int);
 
 // Global variables needed by functions from the GLUT library
 std::size_t num_of_bodies(0);
@@ -111,6 +112,7 @@ int main(int argc, char** argv){
 	glutDisplayFunc(display); // Tell the GLUT library what display function to use
 	glutReshapeFunc(reshape); // Tell the GLUT library to reshape the window according to the reshap function
 	glutTimerFunc(0,timer,0); // Tell the GLUT library what function to call at a specified time period
+	glutKeyboardFunc(mykey); // Tell the GLUT library what function accepts keyboard events
 	init(); // Initial setting of the window features
 	glutMainLoop();
 }
@@ -151,5 +153,11 @@ void timer(int){
 	glutPostRedisplay(); // urges OpenGL to call the display function again when it can
 	glutTimerFunc(1000/30,timer,0); //(ms,func,arg) Recursively calling itself periodically (30 frames per second)
 	work_in_time_step(bodies, num_of_bodies, time_step, obj_space_range);
+}
+
+void mykey(unsigned char key,int x,int y){
+	if(key == 'Q' || key == 'q'){
+		exit(0);
+	}
 }
 

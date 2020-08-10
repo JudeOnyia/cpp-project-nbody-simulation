@@ -13,6 +13,8 @@ To build and install the software, use the commands:
 To run a demonstration, use the commands:
 	$INSTALL_DIR/bin/demo
 
+To exit program, press the 'Q' or 'q' key on your keyboard.
+
 Information to be aware of when using this software and updates to the project
 specifications since the project proposal can be found below:
 
